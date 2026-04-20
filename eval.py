@@ -99,6 +99,10 @@ def main(args):
         cfg['model']['input_dim'] = 400
     elif args.backbone == 'x3d':
         cfg['model']['input_dim'] = 400
+    elif args.backbone == 'egovlp':
+        cfg['model']['input_dim'] = 768
+        output_folder_name += "_egovlp"
+        pprint(cfg)
 
     # model
     model = make_meta_arch(cfg['model_name'], **cfg['model'])
@@ -167,7 +171,7 @@ if __name__ == '__main__':
 
     # Added to CLI
     parser.add_argument('--backbone', default='omnivore', type=str,
-                        choices=['omnivore', '3dresnet', 'videomae', 'slowfast', 'x3d'])
+                        choices=['omnivore', '3dresnet', 'videomae', 'slowfast', 'x3d', 'egovlp'])
     parser.add_argument('--division_type', default='recordings', type=str,
                         choices=['recordings', 'person', 'environment', 'recipes'])
     parser.add_argument('--feat_folder', default='features', type=str,)
