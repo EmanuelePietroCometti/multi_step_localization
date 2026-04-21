@@ -1,12 +1,12 @@
-dataset_name: captaincook_error_dataset
-train_split: ['train']
-val_split: ['val']
+dataset_name: ego4d
+train_split: ['training', 'Training']
+val_split: ['validation', 'Validation']
 dataset: {
   json_file: ./captaincook_actionformer_annotations/combined/recordings.json,
   feat_folder: ./data/egovlp_features,
   file_prefix: ~,
   file_ext: .npz,
-  num_classes: 73,
+  num_classes: 353,
   input_dim: 768,
   feat_stride: 16,
   num_frames: 16,
@@ -18,16 +18,16 @@ dataset: {
 model: {
   #Using the optimized bins calculated from the training set of captaincook4D
   regression_range: [
-    [0, 26], 
-    [26, 49], 
-    [49, 79], 
-    [79, 141], 
-    [141, 281], 
-    [281, 10000]
+    [0, 2], 
+    [2, 4], 
+    [4, 8], 
+    [8, 16], 
+    [16, 64], 
+    [64, 10000]
   ],
   fpn_type: identity,
-  backbone_arch: [2, 2, 7],
-  max_buffer_len_factor: 4.0,
+  backbone_arch: [2, 2, 5],
+  max_buffer_len_factor: 6.0,
   n_mha_win_size: 9,
   embd_dim: 384,
   fpn_dim: 384,
