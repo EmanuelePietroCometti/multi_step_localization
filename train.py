@@ -32,6 +32,10 @@ def main(args):
         cfg = load_config(args.config)
     else:
         raise ValueError("Config file does not exist.")
+    
+    if hasattr(args, 'json_file') and args.json_file != '':
+        cfg["dataset"]["json_file"] = args.json_file
+        print(f"--> [OVERRIDE] Using JSON split: {args.json_file}")
 
     cfg['dataset']['backbone'] = args.backbone
     cfg['dataset']['feat_folder'] = args.feat_folder
@@ -40,9 +44,7 @@ def main(args):
     cfg['dataset']['division_type'] = args.division_type
 
     json_file_path = cfg['dataset']['json_file']
-    json_file_dir = os.path.dirname(json_file_path)
-    json_file_name = os.path.basename(json_file_path).replace('.json', f'_{args.division_type}.json')
-    cfg['dataset']['json_file'] = os.path.join(json_file_dir, json_file_name)
+    cfg["dataset"]["json_file"] = json_file_path
 
     backbone = args.backbone
     division_type = args.division_type
@@ -70,6 +72,8 @@ def main(args):
     elif backbone == 'egovlp':
         cfg['dataset']['input_dim'] = 768
         cfg['model']['input_dim'] = 768
+        output_folder_name+="_egovlp"
+        pprint(cfg)
     pprint(cfg)
 
     # prep for output folder (based on time stamp)
@@ -218,6 +222,7 @@ if __name__ == '__main__':
     parser.add_argument('--feat_folder', default='features', type=str, )
 
     # Default is 30 for all backbones
+    parser.add_argument("--json_file", default='', type=str, help='Path to JSON file (override)')
     parser.add_argument('--num_frames', default=30, type=int, )
     parser.add_argument('--stride', default=30, type=int, )
     args = parser.parse_args()

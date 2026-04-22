@@ -28,6 +28,10 @@ def main(args):
     else:
         raise ValueError("Config file does not exist.")
     assert len(cfg['val_split']) > 0, "Test set must be specified!"
+    
+    if hasattr(args, 'json_file') and args.json_file != '':
+        cfg['dataset']['json_file'] = args.json_file
+        print(f"--> [OVERRIDE] Using JSON split: {args.json_file}")
 
     cfg['dataset']['backbone'] = args.backbone
     cfg['dataset']['feat_folder'] = args.feat_folder
@@ -37,9 +41,7 @@ def main(args):
     cfg['dataset']['videos_type'] = args.videos_type
 
     json_file_path = cfg['dataset']['json_file']
-    json_file_dir = os.path.dirname(json_file_path)
-    json_file_name = os.path.basename(json_file_path).replace('.json', f'_{args.division_type}.json')
-    cfg['dataset']['json_file'] = os.path.join(json_file_dir, json_file_name)
+    cfg["dataset"]["json_file"] = json_file_path
 
     backbone = args.backbone
     division_type = args.division_type
@@ -56,7 +58,8 @@ def main(args):
     print(f"Output folder name: {output_folder_name}")
     # ToDo: override the args.ckpt with the cfg generated ckpt folder
     dataset_name = cfg['dataset_name']
-    args.ckpt = os.path.join(cfg['output_folder'], dataset_name, output_folder_name + '_' + str(args.ckpt))
+    if not os.path.exits(args.ckpt):
+        args.ckpt = os.path.join(cfg['output_folder'], dataset_name, output_folder_name + '_' + str(args.ckpt))
 
     if ".pth.tar" in args.ckpt:
         assert os.path.isfile(args.ckpt), "CKPT file does not exist!"
@@ -114,7 +117,10 @@ def main(args):
     # load ckpt, reset epoch / best rmse
     checkpoint = torch.load(
         ckpt_file,
-        map_location = lambda storage, loc: storage.cuda(cfg['devices'][0])
+        map_location = torch.load(
+            ckpt_file,
+            map_location= 'cuda:0'
+        )
     )
     # load ema model instead
     print("Loading from EMA model ...")
@@ -174,12 +180,13 @@ if __name__ == '__main__':
                         choices=['omnivore', '3dresnet', 'videomae', 'slowfast', 'x3d', 'egovlp'])
     parser.add_argument('--division_type', default='recordings', type=str,
                         choices=['recordings', 'person', 'environment', 'recipes'])
-    parser.add_argument('--feat_folder', default='features', type=str,)
+    parser.add_argument('--feat_folder', default='.data/egovlp_features', type=str,)
 
     # Default is 30 for all backbones
+    parser.add_argument("--json_file", default="", type=str, help="Path to JSON file (override)")
     parser.add_argument('--num_frames', default=30, type=int, )
     parser.add_argument('--stride', default=30, type=int,)
-    parser.add_argument('--videos_type', default='', type=str,
+    parser.add_argument('--videos_type', default='all', type=str,
                         choices=['all', 'normal', 'error'])
     args = parser.parse_args()
     main(args)
