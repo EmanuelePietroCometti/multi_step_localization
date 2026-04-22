@@ -1,7 +1,7 @@
 #!/bin/bash
 
-CONFIG="multi_step_localization/configs/captaincook_egovlp.yaml"
-FEAT_FOLDER="./data/video/egovlp_features"
+CONFIG="./configs/captaincook_egovlp.yaml"
+FEAT_FOLDER="/content/code/data/video/egovlp"
 
 echo "====================================================="
 echo "   GENERATION OF RESULTS (SAVE ONLY MODE)            "

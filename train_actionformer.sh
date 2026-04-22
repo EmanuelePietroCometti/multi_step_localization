@@ -1,7 +1,7 @@
 #!/bin/bash
 
-CONFIG="multi_step_localization/configs/captaincook_egovlp.yaml"
-FEAT_FOLDER="./data/video/egovlp"
+CONFIG="./configs/captaincook_egovlp.yaml"
+FEAT_FOLDER="/content/code/data/video/egovlp"
 NUM_FRAMES=16
 STRIDE=16
 
