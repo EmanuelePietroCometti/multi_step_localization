@@ -58,7 +58,7 @@ def main(args):
     print(f"Output folder name: {output_folder_name}")
     # ToDo: override the args.ckpt with the cfg generated ckpt folder
     dataset_name = cfg['dataset_name']
-    if not os.path.exits(args.ckpt):
+    if not os.path.exists(args.ckpt):
         args.ckpt = os.path.join(cfg['output_folder'], dataset_name, output_folder_name + '_' + str(args.ckpt))
 
     if ".pth.tar" in args.ckpt:
